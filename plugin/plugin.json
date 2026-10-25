@@ -1,0 +1,6 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "dot-twin-agents",
+  "version": "0.1.0",
+  "description": "Same-context asynchronous twins for dot hosts with native full-history subagents. A skill protocol, not a model backend or extra concurrency quota."
+}

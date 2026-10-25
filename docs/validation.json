@@ -1,0 +1,16 @@
+{
+  "package_version": "0.1.0",
+  "test_command": "python -m unittest discover -s tests -v",
+  "tests": 20,
+  "tests_passed": true,
+  "skill_validator": "passed",
+  "isolated_wheel_install_and_console_smoke": "passed",
+  "plugin_zip": {
+    "filename": "dot-twin-agents-0.1.0.zip",
+    "bytes": 2515,
+    "sha256": "21c1fea7ba7ad7607bf52195226506e2fec93163265c3dddb76fffa4878807d0"
+  },
+  "native_import_tested": false,
+  "package_live_fork_tested": false,
+  "notes": "Pure builder and packaging verification only; host semantics and quotas unchanged."
+}

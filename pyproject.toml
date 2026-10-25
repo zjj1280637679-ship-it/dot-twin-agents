@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dot-twin-agents"
+version = "0.1.0"
+description = "Skill-first same-context delegation protocol and pure request builder"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+authors = [{name = "zjj1280637679-ship-it"}]
+dependencies = []
+
+[project.scripts]
+dot-twin = "dot_twin.cli:main"
+
+[tool.setuptools]
+packages = ["dot_twin"]
