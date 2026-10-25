@@ -150,7 +150,9 @@ class Journal:
             yield
             self._db.execute("COMMIT")
         except BaseException:
-            self._db.execute("ROLLBACK")
+            # SQLITE_FULL may have already rolled back the transaction.
+            if self._db.in_transaction:
+                self._db.execute("ROLLBACK")
             raise
 
     def _request(self, request_id):

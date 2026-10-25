@@ -109,6 +109,38 @@ class LifecycleTests(unittest.TestCase):
         self.assertEqual(self.journal.snapshot("r1")["state"], "prepared")
         self.assertEqual(len(self.journal.history()), 1)
 
+    def test_sqlite_full_preserves_original_error_and_committed_state(self):
+        self.create()
+        port = SyntheticPort()
+        self.journal.dispatch("r1", port)
+        self.journal.collect(finding())
+        before = self.journal.snapshot("r1")
+        audit_before = self.journal.history()
+        # Limit the real connection's database growth, not the filesystem.
+        pages = self.journal._db.execute("PRAGMA page_count").fetchone()[0]
+        limit = pages + 1
+        self.assertEqual(self.journal._db.execute(f"PRAGMA max_page_count={limit}").fetchone()[0], limit)
+        with self.assertRaises(sqlite3.OperationalError) as caught:
+            self.journal.collect(final(text="Synthetic final. " + "x" * 1_000_000))
+        error = caught.exception
+        self.assertIs(type(error), sqlite3.OperationalError)
+        self.assertEqual(str(error), "database or disk is full")
+        # Python 3.10 lacks these attributes; 3.11+ must retain SQLite code 13.
+        if hasattr(error, "sqlite_errorcode"):
+            self.assertEqual(error.sqlite_errorcode, sqlite3.SQLITE_FULL)
+            self.assertEqual(error.sqlite_errorname, "SQLITE_FULL")
+        self.assertFalse(self.journal._db.in_transaction)
+        self.assertEqual(self.journal.snapshot("r1"), before)
+        self.assertEqual(self.journal.history(), audit_before)
+        self.journal.close()
+        self.journal = Journal(self.path)
+        self.assertEqual(self.journal.snapshot("r1"), before)
+        self.assertEqual(self.journal.history(), audit_before)
+        with self.assertRaisesRegex(ValueError, "already_attempted"):
+            self.journal.dispatch("r1", port)
+        self.assertEqual(len(port.calls), 1)
+        self.assertEqual(self.journal.collect(final()), "accepted")
+
     def test_failed_pending_replay_rolls_back_binding_and_can_reconcile_again(self):
         self.create()
         def lost(*_):
