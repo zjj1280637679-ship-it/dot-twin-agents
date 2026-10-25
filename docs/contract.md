@@ -5,7 +5,10 @@
 `contracts.validate` owns input grammar; `request.prepare` owns the single
 relationship from validated task difference to a native full-history request.
 `cli` owns only JSON transport. `scripts/build_plugin.py` owns the upload allowlist.
-No module receives a host/Kernel object, conversation store, or credentials.
+These pure modules receive no host/Kernel object, conversation store or credentials.
+Optional `lifecycle` owns explicit local correlation and a caller-supplied narrow
+`HostPort`, described in [the lifecycle contract](lifecycle.md). It does not receive
+a conversation store or credentials and supplies no native runtime implementation.
 
 Input: `{task_name: string, delta: string, mode?: enum}`.
 Output: `{task_name: same string, message: fixed concise mode prefix + exact delta,
@@ -20,7 +23,7 @@ It neither serializes nor injects history, and never calls a model or native too
 The CLI emits no task text on failure. It is a trusted-local convenience, not a
 public untrusted-input server or a security sandbox.
 
-## Host relations (not implemented by the helper)
+## Host relations
 
 1. Verify native full-context fork support and capacity.
 2. Submit the prepared request once under the current authorization.
@@ -30,6 +33,12 @@ public untrusted-input server or a security sandbox.
 4. Parent and child work asynchronously. Material findings include evidence;
    parent checks the actual result before treating an external action as done.
 5. Continue an existing idle child through the supported resume primitive.
+
+The optional journal records the intent before its one-shot port call, binds the
+actual receipt and collects later envelopes. The trusted host adapter owns the
+native call and authoritative identity normalization. The journal does not verify
+full-context capability or context inheritance, implement resume, or automatically
+retry unknown outcomes. The existing pure builder and CLI remain unchanged.
 
 Platform limits and approvals are inherited, not expanded. Internal/private host
 rules are never bundled. A full-history fork inherits currently available history,

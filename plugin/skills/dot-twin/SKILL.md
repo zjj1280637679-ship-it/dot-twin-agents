@@ -27,6 +27,14 @@ and supporting evidence through `collaboration.send_message`; collect its final
 result and verify completion before acting on it. Use `followup_task` to continue
 an idle twin when supported; a queued message alone may not resume it.
 
+Retain a stable request ID and the actual returned child identity; a requested
+task name is not an admission receipt. If startup is uncertain, reconcile through
+the host before any new submission. Associate later findings and final results
+with that identity, preserve evidence and disagreements, and flag conflicting or
+misattributed results. A requested `fork_turns: "all"` does not verify inheritance.
+The optional Python lifecycle journal supports this bookkeeping separately; the
+Skill ZIP contains no native adapter or execution engine.
+
 Full context does not mean independent reality: inherited blind spots may persist.
 Use a fresh-context reviewer when the premise itself needs reconstruction.
 
