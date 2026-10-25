@@ -8,7 +8,7 @@
 
 - **宿主**：真正复制当前可用上下文、执行并发、管理权限和计费。
 - **Skill**：选择何时分身、差异式任务目标、回传与完成验收。
-- **可选纯 helper**：验证输入并生成原生 spawn 参数；不执行调用、不读历史或密钥。
+- **可选 Python helper**：纯参数 builder；另有显式 port 与本地回收日志，不读历史或密钥。
 
 没有原生 full-history fork 时，本插件明确不可用。不得把压缩简报冒充同文。
 对话状态独立不等于磁盘隔离；共享目录仍需单写者或独立工作树。
@@ -36,6 +36,17 @@ printf '%s' '{"task_name":"verify_delivery","delta":"核对最后一公里，保
 输出只有 `task_name/message/fork_turns`；人工或可信宿主决定是否真正调用。
 `mode` 可选 `open`（默认）、`directed`、`verify`、`consolidate`。
 没有历史文本、API key、workspace、权限开关或并发覆写参数。
+
+## 可选生命周期回收
+
+`dot_twin.lifecycle.Journal` 接受原有 helper 输出，为请求分配稳定 ID，
+通过调用方提供的 `HostPort` 提交一次，并绑定宿主返回的真实子任务 ID。
+SQLite 日志保留发现、依据、分歧及冲突结果，隔离未知请求和错归属，识别重复。
+回执丢失时保留 `uncertain`，阻止自动重发；回执前到达的消息会暂存并重新校验。
+
+没有内置 native adapter；本次只用明确标注的合成 port 测试。
+`fork_turns="all"` 始终只代表请求，日志不会把它升级成已验证的上下文继承。
+参见[最小接入与恢复说明](docs/lifecycle.md)。Skill ZIP 不包含 Python 模块。
 
 ## 插件包与验证
 

@@ -19,6 +19,11 @@ A release records exact package/source hashes and actual local test counts.
 An optional official-host import and real fork smoke test must be reported
 separately. No import or additional native execution is implied by building ZIP.
 
+The optional lifecycle milestone adds synthetic-port tests and a local SQLite
+correlation journal. See [its integration, recovery and verification scope](lifecycle.md).
+The recorded 20-test/ZIP hashes below describe the original 0.1.0 baseline, not a
+new release artifact after the lifecycle changes.
+
 ## Recorded local run (2026-10-25 UTC)
 
 - Python unittest: 20 tests, all passed.
